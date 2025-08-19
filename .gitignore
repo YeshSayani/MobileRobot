@@ -6,3 +6,7 @@ frames*log/
 __pycache__/
 **/frames/
 *.frame
+
+# Ignore runtime frames
+**/frames/
+*.frame
