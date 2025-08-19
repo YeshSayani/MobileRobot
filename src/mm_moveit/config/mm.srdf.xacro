@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mobile_ur5e">
+  <!-- fixed UR5e prefix -->
+  <group name="manipulator">
+    <chain base_link="ur5e_base_link" tip_link="ur5e_tool0"/>
+  </group>
+
+  <group_state name="home" group="manipulator">
+    <joint name="ur5e_shoulder_pan_joint" value="0"/>
+    <joint name="ur5e_shoulder_lift_joint" value="0"/>
+    <joint name="ur5e_elbow_joint"        value="0"/>
+    <joint name="ur5e_wrist_1_joint"      value="0"/>
+    <joint name="ur5e_wrist_2_joint"      value="0"/>
+    <joint name="ur5e_wrist_3_joint"      value="0"/>
+  </group_state>
+</robot>
+

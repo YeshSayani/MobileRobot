@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<robot name="mobile_ur5e" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===== Tunables (safe defaults; override via CLI: wheel_radius:=0.07, etc.) ===== -->
+  <xacro:property name="wheel_radius"     value="0.09"/>   <!-- m -->
+  <xacro:property name="wheel_thickness"  value="0.045"/>  <!-- m -->
+  <xacro:property name="wheel_x_offset"   value="0.14"/>   <!-- fore/aft half-length (m) -->
+  <xacro:property name="wheel_y_offset"   value="0.195"/>   <!-- half track width (m) -->
+  <xacro:property name="base_thickness"   value="0.10"/>   <!-- chassis height (m) -->
+  <xacro:property name="base_clearance"   value="0.05"/>   <!-- ground clearance (m) -->
+
+  <!-- Derived: base box center height -->
+  <xacro:property name="base_z" value="${base_clearance + base_thickness/2.0}"/>
+
+  <!-- Colors -->
+  <material name="mat_base"><color rgba="0.20 0.22 0.25 1.0"/></material>   <!-- dark grey -->
+  <material name="mat_top"><color  rgba="0.10 0.55 0.60 1.0"/></material>   <!-- teal-ish -->
+  <material name="mat_wheel"><color rgba="0.05 0.05 0.05 1.0"/></material>  <!-- near black -->
+
+  <!-- ================= Base chassis ================= -->
+  <link name="base_link">
+    <inertial>
+      <mass value="8.0"/>
+      <origin xyz="0 0 ${base_z}"/>
+      <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.2"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${base_z}"/>
+      <geometry><box size="0.4 0.34 ${base_thickness}"/></geometry>
+      <material name="mat_base"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_z}"/>
+      <geometry><box size="0.4 0.34 ${base_thickness}"/></geometry>
+    </collision>
+  </link>
+
+  <!-- ================= Top plate ================= -->
+  <link name="top_plate">
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 ${base_z + base_thickness/2.0 + 0.08}"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 ${base_z + base_thickness/2.0 + 0.08}"/>
+      <geometry><box size="0.28 0.22 0.02"/></geometry>
+      <material name="mat_top"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_z + base_thickness/2.0 + 0.08}"/>
+      <geometry><box size="0.28 0.22 0.02"/></geometry>
+    </collision>
+  </link>
+  <joint name="top_plate_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="top_plate"/>
+  </joint>
+
+  <!-- ========== 4 wheels (axis along +Y), cylinder rotated +90° about X ========== -->
+  <xacro:macro name="wheel_link" params="name">
+    <link name="${name}">
+      <inertial>
+        <mass value="0.3"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="0.0006" ixy="0" ixz="0" iyy="0.0006" iyz="0" izz="0.0012"/>
+      </inertial>
+      <visual>
+        <origin rpy="1.57079632679 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_thickness}"/></geometry>
+        <material name="mat_wheel"/>
+      </visual>
+      <collision>
+        <origin rpy="1.57079632679 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_thickness}"/></geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:wheel_link name="left_front_wheel"/>
+  <xacro:wheel_link name="left_rear_wheel"/>
+  <xacro:wheel_link name="right_front_wheel"/>
+  <xacro:wheel_link name="right_rear_wheel"/>
+
+  <!-- Axle height = wheel_radius -->
+  <joint name="left_front_wheel_joint"  type="continuous">
+    <parent link="base_link"/><child link="left_front_wheel"/>
+    <origin xyz="${ wheel_x_offset} ${ wheel_y_offset} ${wheel_radius}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="left_rear_wheel_joint"   type="continuous">
+    <parent link="base_link"/><child link="left_rear_wheel"/>
+    <origin xyz="${-wheel_x_offset} ${ wheel_y_offset} ${wheel_radius}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="right_front_wheel_joint" type="continuous">
+    <parent link="base_link"/><child link="right_front_wheel"/>
+    <origin xyz="${ wheel_x_offset} ${-wheel_y_offset} ${wheel_radius}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="right_rear_wheel_joint"  type="continuous">
+    <parent link="base_link"/><child link="right_rear_wheel"/>
+    <origin xyz="${-wheel_x_offset} ${-wheel_y_offset} ${wheel_radius}"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- (Optional) Gazebo Classic friction tags — harmless if ignored in Ignition/GZ -->
+  <gazebo reference="left_front_wheel"><mu1>1.0</mu1><mu2>1.0</mu2><slip1>0.0</slip1><slip2>0.0</slip2></gazebo>
+  <gazebo reference="left_rear_wheel"><mu1>1.0</mu1><mu2>1.0</mu2><slip1>0.0</slip1><slip2>0.0</slip2></gazebo>
+  <gazebo reference="right_front_wheel"><mu1>1.0</mu1><mu2>1.0</mu2><slip1>0.0</slip1><slip2>0.0</slip2></gazebo>
+  <gazebo reference="right_rear_wheel"><mu1>1.0</mu1><mu2>1.0</mu2><slip1>0.0</slip1><slip2>0.0</slip2></gazebo>
+
+  <!-- ========== UR5e arm (macro include) ========== -->
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+  <xacro:ur_robot
+      name="ur5e"
+      parent="top_plate"
+      tf_prefix="ur5e_"
+      joint_limits_parameters_file="$(find ur_description)/config/ur5e/joint_limits.yaml"
+      kinematics_parameters_file="$(find ur_description)/config/ur5e/default_kinematics.yaml"
+      physical_parameters_file="$(find ur_description)/config/ur5e/physical_parameters.yaml"
+      visual_parameters_file="$(find ur_description)/config/ur5e/visual_parameters.yaml">
+    <origin xyz="0 0 0.20" rpy="0 0 0"/>
+  </xacro:ur_robot>
+
+  <!-- ========== ros2_control: one system for base + arm ========== -->
+  <ros2_control name="sim_system" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+
+    <!-- Base wheels (velocity) -->
+    <joint name="left_front_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="left_rear_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="right_front_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+    <joint name="right_rear_wheel_joint"><command_interface name="velocity"/><state_interface name="position"/><state_interface name="velocity"/></joint>
+
+    <!-- UR5e joints (position) -->
+    
+    <joint name="ur5e_shoulder_pan_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <joint name="ur5e_shoulder_lift_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">-1.5708</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <joint name="ur5e_elbow_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">-1.5708</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <joint name="ur5e_wrist_1_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <joint name="ur5e_wrist_2_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>  
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <joint name="ur5e_wrist_3_joint">
+      <command_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">0.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- gz_ros2_control plugin -->
+  <gazebo>
+    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <robot_param>robot_description</robot_param>
+      <robot_param_node>robot_state_publisher</robot_param_node>
+      <parameters>$(find mm_bringup)/config/ros2_controllers.yaml</parameters>
+      <velocity_proportional_gain>20.0</velocity_proportional_gain>
+    </plugin>
+  </gazebo>
+
+</robot>

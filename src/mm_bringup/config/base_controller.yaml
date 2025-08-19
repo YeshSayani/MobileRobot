@@ -1,0 +1,16 @@
+ros__parameters:
+  left_wheel_names:  [left_front_wheel_joint, left_rear_wheel_joint]
+  right_wheel_names: [right_front_wheel_joint, right_rear_wheel_joint]
+
+  wheel_radius: 0.09
+  wheel_separation: 0.39
+
+  use_stamped_vel: false       # we will publish to .../cmd_vel_unstamped
+  cmd_vel_timeout: 0.5
+  publish_rate: 50.0
+
+  enable_odom_tf: true
+  odom_frame_id: odom
+  base_frame_id: base_link
+
+  open_loop: false
