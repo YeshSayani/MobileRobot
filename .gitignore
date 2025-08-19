@@ -14,3 +14,7 @@ __pycache__/
 # Ignore exported frame artifacts
 frames_*.pdf
 frames_*.gv
+
+# Ignore exported frame artifacts
+frames_*.pdf
+frames_*.gv
