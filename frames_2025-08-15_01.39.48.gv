@@ -1,0 +1,22 @@
+digraph G {
+"base_link" -> "left_wheel"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"odom" -> "base_link"[label=" Broadcaster: default_authority\nAverage rate: 50.207\nBuffer length: 4.84\nMost recent transform: 19.55\nOldest transform: 14.71\n"];
+"base_link" -> "right_wheel"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_upper_arm_link" -> "ur5e_forearm_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_shoulder_link" -> "ur5e_upper_arm_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_base_link_inertia" -> "ur5e_shoulder_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_base_link" -> "ur5e_base_link_inertia"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"ur5e_forearm_link" -> "ur5e_wrist_1_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_wrist_1_link" -> "ur5e_wrist_2_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"ur5e_wrist_2_link" -> "ur5e_wrist_3_link"[label=" Broadcaster: default_authority\nAverage rate: 200.206\nBuffer length: 4.845\nMost recent transform: 19.55\nOldest transform: 14.705\n"];
+"base_link" -> "top_plate"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"top_plate" -> "ur5e_base_link"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"ur5e_base_link" -> "ur5e_base"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"ur5e_flange" -> "ur5e_tool0"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"ur5e_wrist_3_link" -> "ur5e_flange"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"ur5e_wrist_3_link" -> "ur5e_ft_frame"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1755236388.3756726"[ shape=plaintext ] ;
+}->"odom";
+}

@@ -1,0 +1,19 @@
+# Terminal 1 — Gazebo + robot + controllers
+source ~/mm_ws/install/setup.bash
+ros2 launch mm_bringup sim.launch.py
+
+# Terminal 2 — MoveIt 2 (arm planning)
+source ~/mm_ws/install/setup.bash
+ros2 launch mm_moveit bringup.launch.py
+
+# Terminal 3 — Camera bridge (after you added a camera sensor model)
+ros2 run ros_gz_image image_bridge /camera_sensor_msgs/msg/Image
+
+# Terminal 4 — Lidar bridge (after you added a lidar sensor model)
+ros2 run ros_gz_bridge parameter_bridge \
+   /scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan
+
+# Terminal 5 — SLAM or Nav2 (pick one flow)
+ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true
+# …drive around with /cmd_vel or send Nav2 goals once you have a map
+

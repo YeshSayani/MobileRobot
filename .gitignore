@@ -2,7 +2,5 @@ build/
 install/
 log/
 .colcon/
-**/__pycache__/
 *.pyc
-.DS_Store
-.vscode/
+__pycache__/
